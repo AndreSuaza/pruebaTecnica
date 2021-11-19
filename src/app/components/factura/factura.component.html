@@ -1,0 +1,127 @@
+
+<button *ngIf="admin" class="btn btn-primary mg-bot-2" (click)=" accionFactura('Nueva') "> Nueva Factura </button>
+
+<div *ngIf="accion" class="thumbnail">
+    <div class="caption">
+        <h3 class="mg-bot-2">{{accion}} Factura</h3>
+        <form [formGroup]="crearFacturaForm"> 
+            <div class="form-group">
+              <label for="emailaddress">Identificacion</label>
+              <input class="form-control" formControlName="id" type="number" placeholder="Numero de Factura">
+            </div>
+
+            <h4>Productos</h4>
+
+            <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Valor</th>
+                    <th>IVA</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
+                <tbody formArrayName="productos"> 
+                    <tr *ngFor="let producto of productos.controls; let i=index" [formGroupName]='i'>
+                      <th><input type="text" formControlName = "nombre"> </th>
+                      <th><input type="number" formControlName = "valor" (ngModelChange)="calcularIvaProducto(i)"> </th>
+                      <th><input type="number" formControlName = "iva"> </th>
+                      <td><button *ngIf="accion != 'Detalle'" class="btn btn-primary" (click)="eliminarProducto(i)"> Eliminar </button></td>
+                    </tr>
+                </tbody>
+            </table>
+              
+              <button *ngIf="accion != 'Detalle'" class="btn btn-primary mg-bot-2" (click)="nuevoProducto()"> Nuevo Producto </button>
+
+            <div class="form-group">
+              <label for="password">Valor Total</label>
+              <input 
+                class="form-control" 
+                formControlName="valorTotal" 
+                type="number" 
+                placeholder="Valor Total"
+                (ngModelChange)="calcularIvaTotal()"  
+                >
+            </div>
+            <div class="form-group">
+                <label for="password">IVA Total</label>
+                <input class="form-control" formControlName="ivaTotal" type="number" placeholder="Iva Total">
+            </div>
+            <div class="form-group">
+                <label for="password">Pagada</label>
+                <select formControlName="pagada" class="form-control" >
+                  <option value="true">SI</option>
+                  <option value="false">NO</option>
+                </select>
+            </div>
+        </form>
+            
+        <div *ngIf="accion == 'Nueva'" class="form-group mb-0 text-center">
+          <button button [disabled]="!crearFacturaForm.valid" class="btn btn-primary btn-block" type="submit" (click)="crearFactura()"> Crear Factura </button>
+        </div>
+
+        <div *ngIf="accion == 'Editar'" class="form-group mb-0 text-center">
+          <button button [disabled]="!crearFacturaForm.valid" class="btn btn-success btn-block" type="submit" (click)="editarFactura()"> Editar Factura </button>
+        </div>
+        
+        <p *ngIf="msgSuccess != ''" class="bg-success p-1">{{ msgSuccess }}</p>
+
+        <div *ngIf="msgError != ''" class="bg-danger p-1" style="display: block; margin-top: 2em;">{{ msgError }}</div>
+
+    </div>
+</div>
+
+<hr>
+<h2>Facturas</h2>
+
+<hr>
+<h4>Buscar</h4>
+<form [formGroup]="busquedaForm"> 
+  <table class="table">
+    <tr>
+      <th>
+        <input type="number" formControlName = "busquedaId" placeholder="Identificacion" size="10">
+      </th>
+      <th>
+        <input type="number" formControlName = "busquedaValor" placeholder="Valor" size="10">
+      </th>
+      <th>
+        <input type="number" formControlName = "busquedaIva"  placeholder="Iva" size="10">
+      </th>
+      <th>
+        <button class="btn btn-primary btn-block" (click)="buscar()"> Buscar </button>
+      </th>
+      <th>
+        <button class="btn btn-primary btn-block mg-l-1" (click)="getFacturas()"> Limpiar </button>
+      </th>
+    </tr>
+  </table>
+</form>
+
+<table class="table table-bordered">
+    <thead>
+      
+      <tr>
+        <th>Id</th>
+        <th>Valor Total</th>
+        <th>IVA Total</th>
+        <th>Pagada</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let factura of busquedaFacturas">
+        <th scope="row">{{ factura.id }}</th>
+        <td>{{ factura.valorTotal }}</td>
+        <td>{{ factura.ivaTotal }}</td>
+        <td>{{ factura.pagada ? "si" : "no"}}</td>
+        <td>
+ 
+          <button type="button" class="btn btn-default" (click)="accionFactura('Detalle', factura)">Detalle</button>
+          <button *ngIf="admin" type="button" class="btn btn-primary mg-l-1" (click)="accionFactura('Editar', factura)"> Editar </button>
+          <button *ngIf="admin" type="button" class="btn btn-danger mg-l-1" (click)="eliminarFactura(factura)"> Eliminar </button>
+
+      </tr>
+    </tbody>
+  </table>
+

@@ -1,0 +1,23 @@
+<div class="container">
+    <div class="panel panel-primary mg-top-4">
+        <div class="panel-heading">Login</div>
+        <div class="panel-body">
+            <form [formGroup]="loginForm"> 
+                <div class="form-group">
+                  <label for="emailaddress">Usuario</label>
+                  <input class="form-control" formControlName="user" type="email" placeholder="Ingresa tu correo">
+                </div>
+                <div class="form-group">
+                  <label for="password">Contraseña</label>
+                  <input class="form-control" formControlName="password" type="password" placeholder="Ingresa tu contraseña">
+                </div>
+               
+                <div class="form-group mb-0 text-center">
+                  <button button [disabled]="!loginForm.valid" class="btn btn-primary btn-block" type="submit" (click)="login()"> Log In </button>
+              </div>
+              </form>
+              <div *ngIf="error" class="invalid-feedback text-center" style="display: block; margin-top: 2em;">{{error}}</div>
+        </div>
+      </div>
+</div>
+
